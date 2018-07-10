@@ -2,11 +2,13 @@
     "name": "switchain-wallets",
     "version": "1.0.0",
     "description": "Switchain microservice to manage wallets",
-    "main": "index.js",
     "scripts": {
-        "start": "node src/index"
+        "start": "node src/index.js"
     },
     "author": "",
     "license": "ISC",
-    "dependencies": {}
+    "dependencies": {
+        "glob": "^7.1.2",
+        "micro": "^9.3.2"
+    }
 }
