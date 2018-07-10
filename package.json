@@ -3,12 +3,19 @@
     "version": "1.0.0",
     "description": "Switchain microservice to manage wallets",
     "scripts": {
-        "start": "node src/index.js"
+        "start": "node src/index",
+        "test": "ava"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
         "glob": "^7.1.2",
         "micro": "^9.3.2"
+    },
+    "devDependencies": {
+        "ava": "^0.25.0",
+        "request": "^2.87.0",
+        "request-promise": "^4.2.2",
+        "test-listen": "^1.1.0"
     }
 }
