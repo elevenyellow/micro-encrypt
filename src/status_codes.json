@@ -1,5 +1,5 @@
 {
-    "OK": 200,
-    "UNAUTHORIZED": 401,
-    "NOT_FOUND": 404
+    "OK": {"code":200, "message":"Success!"},
+    "UNAUTHORIZED": {"code":401, "message":"Unauthorized"},
+    "NOT_FOUND": {"code":402, "message":"Not Found"}
 }

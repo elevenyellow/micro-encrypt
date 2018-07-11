@@ -1,30 +1,53 @@
-const micro = require('micro')
 const test = require('ava')
 const listen = require('test-listen')
 const request = require('request-promise')
-const resolver = require('../src/resolver')
+const micro = require('../src/micro')
+const load = require('../src/load')
+const auths = require('../auths')
 
-let service
-let url
+let port = 4444
+let url = `http://localhost:${port}`
+let API_KEY
+let API_SECRET
+// Loading first user/auth
+for (API_KEY in auths) {
+    API_SECRET = auths[API_KEY]
+    break
+}
+let options = {
+    headers: {
+        Authorization: API_KEY
+    }
+}
+let server = micro({
+    auths: auths,
+    endpoints: load('./endpoints/*.js')
+})
+server.listen(port)
 
-const API_KEY =
-    '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb'
-const API_SECRET = 'my_password'
+test('Unauthorized', async t => {
+    try {
+        const body = await request(`${url}`)
+    } catch (e) {
+        const data = JSON.parse(e.error)
+        t.is(data.error, 401)
+    }
+})
+
+test('Not found', async t => {
+    try {
+        const body = await request(`${url}`, options)
+    } catch (e) {
+        const data = JSON.parse(e.error)
+        t.is(data.error, 402)
+    }
+})
 
 test('getAddressForDeposit', async t => {
-    service = micro(resolver)
-    url = await listen(service)
-
-    const body = await request(`${url}/getAddressForDeposit`, {
-        headers: {
-            Authorization: 'API_KEY'
-        }
-    })
+    const body = await request(`${url}/getAddressForDeposit`, options)
     t.deepEqual(body, 'Yeah!!')
 })
 
-// test('getAddressForDeposit', async t => {
-//     const body = await request(`${url}/getAddressForDeposit`)
-//     t.deepEqual(body, 'Yeah!!!')
-//     service.close()
+// test('Clossing server', async t => {
+//     t.deepEqual(typeof server.close(), 'Yeah!!')
 // })
