@@ -2,8 +2,10 @@ const glob = require('glob')
 const path = require('path')
 const url = require('url')
 const { send } = require('micro')
-const { NOT_FOUND } = require('./status_codes')
+const { UNAUTHORIZED, NOT_FOUND } = require('./status_codes')
+const authoritations = require('./authorizations')
 
+// Loading all endpoints
 const endpoint_resolver = {}
 glob.sync('./src/endpoint/*.js').forEach(file => {
     const basename = path.basename(file)
@@ -11,13 +13,25 @@ glob.sync('./src/endpoint/*.js').forEach(file => {
     endpoint_resolver[name] = require(path.resolve(file))
 })
 
+// Handler that resolve all the requests before is passed to the endpoint
 module.exports = async (req, res) => {
-    const urlparsed = url.parse(req.url).pathname.split('/')
-    const name = urlparsed[1]
-    return 'Yeah!'
-    if (endpoint_resolver[name] === undefined) {
-        send(res, NOT_FOUND, '')
+    const authorization = req.headers.authorization
+    const urlparsed = url.parse(req.url)
+    const pathname = urlparsed.pathname.split('/')
+    const name = pathname[1]
+    const password = authoritations[authorization]
+
+    if (authorization === null || password === undefined) {
+        send(res, UNAUTHORIZED, {
+            message: 'Unauthorized',
+            code: UNAUTHORIZED
+        })
+    } else if (endpoint_resolver[name] === undefined) {
+        send(res, NOT_FOUND, {
+            message: 'Not Found',
+            code: NOT_FOUND
+        })
     } else {
-        return await endpoint_resolver[name](req, res)
+        return await endpoint_resolver[name](req, res, urlparsed)
     }
 }

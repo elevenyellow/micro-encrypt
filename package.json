@@ -9,6 +9,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "easy-encrypt": "^1.0.0",
         "glob": "^7.1.2",
         "micro": "^9.3.2"
     },
