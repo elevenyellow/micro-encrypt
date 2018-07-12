@@ -2,7 +2,7 @@ const test = require('ava')
 const listen = require('test-listen')
 const request = require('request-promise')
 const micro = require('../src/micro')
-const load = require('../src/load')
+const { load } = require('../src/endpoints')
 const auths = require('../auths')
 
 let port = 4444
