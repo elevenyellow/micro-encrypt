@@ -1,16 +1,16 @@
 const glob = require('glob')
 const path = require('path')
+const Route = require('route-parser')
 
 module.exports = function(url) {
-    const endpoint_resolver = {}
-    glob.sync(url).forEach(file => {
+    return glob.sync(url).map(file => {
         const f = require(path.resolve(file))
         const basename = path.basename(file)
-        const name =
-            f.name && f.name.length > 0
+        const route =
+            '/' +
+            (f.name && f.name.length > 0
                 ? f.name
-                : basename.substr(0, basename.length - 3)
-        endpoint_resolver[name] = f
+                : basename.substr(0, basename.length - 3))
+        return { route: new Route(route), f: f }
     })
-    return endpoint_resolver
 }
