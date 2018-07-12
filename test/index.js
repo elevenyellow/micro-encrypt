@@ -4,6 +4,7 @@ const request = require('request-promise')
 const micro = require('../src/micro')
 const { load } = require('../src/endpoints')
 const auths = require('../auths')
+const { encrypt, decrypt } = require('../src/encryption')
 
 let port = 4444
 let url = `http://localhost:${port}`
@@ -14,10 +15,8 @@ for (API_KEY in auths) {
     API_SECRET = auths[API_KEY]
     break
 }
-let options = {
-    headers: {
-        Authorization: API_KEY
-    }
+let headers = {
+    Authorization: API_KEY
 }
 let server = micro({
     auths: auths,
@@ -36,16 +35,20 @@ test('Unauthorized', async t => {
 
 test('Not found', async t => {
     try {
-        const body = await request(`${url}`, options)
+        const body = await request(`${url}`, { headers })
     } catch (e) {
-        const data = JSON.parse(e.error)
+        const data = decrypt(e.error, API_SECRET)
         t.is(data.error, 402)
     }
 })
 
-test('getAddressForDeposit', async t => {
-    const body = await request(`${url}/getAddressForDeposit`, options)
-    t.deepEqual(body, 'Yeah!!')
+test('echoEndpoint', async t => {
+    const data = { Hello: 'World' }
+    const body = await request(`${url}/echoEndpoint`, {
+        headers,
+        body: encrypt(data, API_SECRET)
+    })
+    t.deepEqual(decrypt(body, API_SECRET), data)
 })
 
 // test('Clossing server', async t => {

@@ -10,7 +10,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "easy-encrypt": "^1.0.1",
+        "easy-encrypt": "^1.0.2",
         "glob": "^7.1.2",
         "micro": "^9.3.2",
         "route-parser": "0.0.5"

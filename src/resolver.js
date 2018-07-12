@@ -1,4 +1,4 @@
-const { send } = require('micro')
+const { send, text } = require('micro')
 const { encrypt, decrypt } = require('./encryption')
 const { UNAUTHORIZED, NOT_FOUND } = require('./status_codes')
 const Route = require('route-parser')
@@ -19,12 +19,15 @@ module.exports = async (req, res, options) => {
             endpoint => endpoint.route.match(req.url) !== false
         )
         if (endpoints_match.length > 0) {
-            return await endpoints[0].f(req, res, options)
+            req.body = decrypt(await text(req), password)
+            const value = await endpoints[0].f(req, res, options)
+            return encrypt(value, password)
         } else {
-            send(res, NOT_FOUND.code, {
+            const data = {
                 message: NOT_FOUND.message,
                 error: NOT_FOUND.code
-            })
+            }
+            send(res, NOT_FOUND.code, encrypt(data, password))
         }
     }
 }
