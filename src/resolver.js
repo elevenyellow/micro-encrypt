@@ -4,7 +4,7 @@ const { UNAUTHORIZED, NOT_FOUND } = require('./status_codes')
 const Route = require('route-parser')
 
 // Handler that resolve all the requests before is passed to the endpoint
-module.exports = async (req, res, options) => {
+module.exports = async function(req, res, options) {
     const { auths, endpoints } = options
     const authorization = req.headers.authorization
     const password = auths[authorization]
