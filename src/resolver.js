@@ -1,18 +1,18 @@
 const { send, text } = require('micro')
 const { encrypt, decrypt } = require('./encryption')
-const { UNAUTHORIZED, NOT_FOUND } = require('./status_codes')
+const { status, key } = require('./const')
 const Route = require('route-parser')
 
 // Handler that resolve all the requests before is passed to the endpoint
 module.exports = async function(req, res, options) {
     const { auths, endpoints } = options
-    const authorization = req.headers.authorization
+    const authorization = req.headers[key.AUTHORIZATION]
     const password = auths[authorization]
 
     if (authorization === null || password === undefined) {
-        send(res, UNAUTHORIZED.code, {
-            message: UNAUTHORIZED.message,
-            error: UNAUTHORIZED.code
+        send(res, status.UNAUTHORIZED.code, {
+            message: status.UNAUTHORIZED.message,
+            error: status.UNAUTHORIZED.code
         })
     } else {
         const endpoints_match = endpoints.filter(
@@ -24,10 +24,10 @@ module.exports = async function(req, res, options) {
             return encrypt(value, password)
         } else {
             const data = {
-                message: NOT_FOUND.message,
-                error: NOT_FOUND.code
+                message: status.NOT_FOUND.message,
+                error: status.NOT_FOUND.code
             }
-            send(res, NOT_FOUND.code, encrypt(data, password))
+            send(res, status.NOT_FOUND.code, encrypt(data, password))
         }
     }
 }

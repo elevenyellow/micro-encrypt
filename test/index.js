@@ -3,7 +3,6 @@ const createRequest = require('../src/request')
 const micro = require('../src/micro')
 const { load } = require('../src/endpoints')
 const auths = require('../auths')
-const { encrypt, decrypt } = require('../src/encryption')
 
 let port = 4444
 let url = `http://localhost:${port}`
@@ -36,8 +35,10 @@ test('Not found', async t => {
     try {
         const body = await request(`${url}`)
     } catch (e) {
-        const data = decrypt(e.error, API_SECRET)
-        t.is(data.error, 402)
+        t.deepEqual(e.error, {
+            error: 402,
+            message: 'Not Found'
+        })
     }
 })
 
@@ -45,7 +46,7 @@ test('echoEndpoint', async t => {
     const request = createRequest(API_KEY, API_SECRET)
     const data = { Hello: 'World' }
     const body = await request(`${url}/echoEndpoint`, { body: data })
-    t.deepEqual(decrypt(body, API_SECRET), data)
+    t.deepEqual(body, data)
 })
 
 // test('Clossing server', async t => {
