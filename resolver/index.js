@@ -11,8 +11,7 @@ module.exports = async function(req, res, options) {
 
     if (authorization === null || password === undefined) {
         send(res, status.UNAUTHORIZED.code, {
-            message: status.UNAUTHORIZED.message,
-            error: status.UNAUTHORIZED.code
+            message: status.UNAUTHORIZED.message
         })
     } else {
         const endpoints_match = endpoints.filter(
@@ -20,12 +19,11 @@ module.exports = async function(req, res, options) {
         )
         if (endpoints_match.length > 0) {
             req.body = decrypt(await text(req), password)
-            const value = await endpoints[0].f(req, res, options)
+            const value = await endpoints_match[0].f(req, res, options)
             return encrypt(value, password)
         } else {
             const data = {
-                message: status.NOT_FOUND.message,
-                error: status.NOT_FOUND.code
+                message: status.NOT_FOUND.message
             }
             send(res, status.NOT_FOUND.code, encrypt(data, password))
         }

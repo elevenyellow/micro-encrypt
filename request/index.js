@@ -24,6 +24,11 @@ module.exports = function(auth, password) {
         } catch (e) {
             // Decrypt always if status code is not 401 (Unauthorized)
             if (e.statusCode !== 401) e.error = decrypt(e.error, password)
+            else {
+                try {
+                    e.error = JSON.parse(e.error)
+                } catch (e) {}
+            }
             throw e
         }
     }
