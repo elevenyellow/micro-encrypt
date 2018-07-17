@@ -1,6 +1,6 @@
 const rp = require('request-promise')
-const { key } = require('./const')
-const { encrypt, decrypt } = require('./encryption')
+const { key } = require('../const')
+const { encrypt, decrypt } = require('../encryption')
 
 module.exports = function(auth, password) {
     return async (...args) => {

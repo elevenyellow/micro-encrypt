@@ -1,9 +1,8 @@
 {
-    "name": "switchain-wallets",
-    "version": "1.0.0",
-    "description": "Switchain microservice to manage wallets",
+    "name": "micro-encrypt",
+    "version": "1.0.2",
+    "description": "Small library to create micro-services with AES128-CTR encryption",
     "scripts": {
-        "start": "node index",
         "test": "ava",
         "testing": "npm test -- --watch"
     },

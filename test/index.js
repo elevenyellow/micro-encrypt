@@ -1,8 +1,8 @@
 const test = require('ava')
-const createRequest = require('../src/request')
-const micro = require('../src/micro')
-const { load } = require('../src/endpoints')
-const auths = require('../auths')
+const createRequest = require('../request')
+const micro = require('../micro')
+const { load } = require('../endpoints')
+const auths = require('./.test/auths')
 
 let port = 4444
 let url = `http://localhost:${port}`
@@ -16,7 +16,7 @@ for (API_KEY in auths) {
 
 let server = micro({
     auths: auths,
-    endpoints: load('./endpoints/*.js')
+    endpoints: load('./test/.test/endpoints/*.js')
 })
 server.listen(port)
 
