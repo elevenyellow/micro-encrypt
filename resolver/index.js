@@ -14,18 +14,29 @@ module.exports = async function(req, res, options) {
             message: status.UNAUTHORIZED.message
         })
     } else {
+        const sendEncrypted = (res, status_code, data) =>
+            send(res, status_code, encrypt(data, password))
         const endpoints_match = endpoints.filter(
             endpoint => endpoint.route.match(req.url) !== false
         )
         if (endpoints_match.length > 0) {
+            req.API_KEY = authorization
+            req.API_SECRET = password
             req.body = decrypt(await text(req), password)
-            const value = await endpoints_match[0].f(req, res, options)
-            return encrypt(value, password)
+            const value = await endpoints_match[0].f(
+                req,
+                res,
+                sendEncrypted,
+                options
+            )
+            if (value !== undefined) {
+                return encrypt(value, password)
+            }
         } else {
             const data = {
                 message: status.NOT_FOUND.message
             }
-            send(res, status.NOT_FOUND.code, encrypt(data, password))
+            sendEncrypted(res, status.NOT_FOUND.code, data)
         }
     }
 }

@@ -67,10 +67,7 @@ test('customError (statusCode)', async t => {
     try {
         const result = await request(`${url}/customError`, { body })
     } catch (e) {
-        console.log(e)
-
         t.is(e.statusCode, body.statusCode)
-        delete body.statusCode
         t.deepEqual(e.error, body)
     }
 })

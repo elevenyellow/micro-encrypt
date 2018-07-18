@@ -1,3 +1,3 @@
-module.exports = async (req, res, options) => {
-    throw req.body
+module.exports = async (req, res, send, options) => {
+    send(res, req.body.statusCode, req.body)
 }
