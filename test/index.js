@@ -13,11 +13,11 @@ for (API_KEY in auths) {
     API_SECRET = auths[API_KEY]
     break
 }
-
-let server = micro({
+const options = {
     auths: auths,
     endpoints: load('./test/.test/endpoints/*.js')
-})
+}
+const server = micro(options)
 server.listen(port)
 
 test('Unauthorized', async t => {
@@ -70,6 +70,12 @@ test('customError (statusCode)', async t => {
         t.is(e.statusCode, body.statusCode)
         t.deepEqual(e.error, body)
     }
+})
+
+test('options', async t => {
+    const request = createRequest(API_KEY, API_SECRET)
+    const result = await request(`${url}/echoOptions`)
+    t.deepEqual(result, JSON.parse(JSON.stringify(options)))
 })
 
 // test('Clossing server', async t => {
