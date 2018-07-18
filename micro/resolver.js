@@ -23,6 +23,7 @@ module.exports = async function(req, res, options) {
             req.API_KEY = authorization
             req.API_SECRET = password
             req.body = decrypt(await text(req), password)
+            req.route = endpoints_match[0].route
             const value = await endpoints_match[0].f(
                 req,
                 res,
