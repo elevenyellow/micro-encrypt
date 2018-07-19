@@ -8,7 +8,7 @@ A small library to create micro-services with AES-256-CTR encryption on top of [
 
 ## auths
 
-To use this library the first thing you have to do is create a json file where you define all of your authentications/users. The format is just key value.
+To use this library the first thing you have to do is create a json file where you define all of your authentications/users. The format is key/value.
 
 Every key of the json is an user. We will call it `API_KEY`, and the value of that `API_KEY` is the `API_SECRET`. You can add as much as you want. Use just one `API_KEY` for each client you connect with.
 
@@ -24,7 +24,7 @@ Example:
 
 ## /micro
 
-This module is just a wrapper of [micro](https://github.com/zeit/micro) with the difference that you have to pass an `object` with two mandatory parameters:
+This module is a wrapper of [micro](https://github.com/zeit/micro) with the difference that you have to pass an `object` with two mandatory parameters:
 
 -   auths: `Object`
 
@@ -49,7 +49,30 @@ to do
 
 ## /request
 
-to do
+This module is just a function that creates a wrapper of [request-promise](https://github.com/request/request-promise) that is a promise wrapper of [request](https://github.com/request/request).
+
+```js
+const createRequest = require('micro-encrypt/request')
+const request = createRequest(API_KEY, API_SECRET) // Any of those you have defined previously in auths.json
+const body = { symbol: 'BTC' }
+const address = await request(`${url}/getAddressForDeposit`, { body })
+```
+
+If you want to use [request](https://github.com/request/request) as standalone you can do it this way:
+
+```js
+const request = require('request')
+const { encrypt, decrypt } = require('micro-encrypt/encryption')
+const body = encrypt({ symbol: 'BTC' }, API_SECRET)
+const headers = { authorization: API_KEY }
+request(
+    `${url}/getAddressForDeposit`,
+    { body, headers },
+    (error, response, body) => {
+        const address = decrypt(body, API_SECRET)
+    }
+)
+```
 
 ## /encryption
 
