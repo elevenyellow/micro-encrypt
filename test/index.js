@@ -21,11 +21,11 @@ const options = {
 const server = micro(options)
 server.listen(port)
 
-// test('echoEndpoint without encryption', async t => {
-//     const body = { Hello: 'World' }
-//     const result = await request(`${url}/echoEndpoint`, { body })
-//     t.deepEqual(result, body)
-// })
+test('echoEndpoint without encryption', async t => {
+    const body = { Hello: 'World' }
+    const result = await request(`${url}/echoEndpoint`, { body })
+    t.deepEqual(result, body)
+})
 
 test('Unauthorized', async t => {
     try {

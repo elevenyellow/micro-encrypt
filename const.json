@@ -6,6 +6,7 @@
     },
 
     "key": {
+        "AUTHORIZED": "authorized",
         "AUTHORIZATION": "authorization",
         "ENCRYPTION": "encryption",
         "API_KEY": "API_KEY",
