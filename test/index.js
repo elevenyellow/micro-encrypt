@@ -21,6 +21,12 @@ const options = {
 const server = micro(options)
 server.listen(port)
 
+// test('echoEndpoint without encryption', async t => {
+//     const body = { Hello: 'World' }
+//     const result = await request(`${url}/echoEndpoint`, { body })
+//     t.deepEqual(result, body)
+// })
+
 test('Unauthorized', async t => {
     try {
         const result = await request(`${url}`, {
@@ -43,12 +49,6 @@ test('Not found', async t => {
         t.deepEqual(e.error, { message: 'Not Found' })
     }
 })
-
-// test('echoEndpoint without encryption', async t => {
-//     const body = { Hello: 'World' }
-//     const result = await request(`${url}/echoEndpoint`, { body })
-//     t.deepEqual(result, body)
-// })
 
 test('echoEndpoint JSON', async t => {
     const body = { Hello: 'World' }

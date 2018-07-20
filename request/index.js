@@ -1,6 +1,6 @@
 const rp = require('request-promise')
 const { key } = require('../const')
-const { encrypt, decrypt } = require('../encryption')
+const { encrypt, decrypt, parse, stringify } = require('../encryption')
 
 module.exports = async (...args) => {
     // Getting options object
@@ -22,29 +22,29 @@ module.exports = async (...args) => {
         API_SECRET = encryption[key.API_SECRET]
     }
 
+    // Adding Authorization
     if (is_encrypted) {
-        // Adding Authorization
         if (!options.hasOwnProperty('headers')) options.headers = {}
         if (!options.headers.hasOwnProperty(key.AUTHORIZATION))
             options.headers[key.AUTHORIZATION] = API_KEY
-
-        // Encrypting
-        if (options.hasOwnProperty('body'))
-            options.body = encrypt(options.body, API_SECRET)
     }
+
+    // Encrypting
+    if (options.hasOwnProperty('body'))
+        options.body = is_encrypted
+            ? encrypt(options.body, API_SECRET)
+            : stringify(options.body)
 
     try {
         const result = await rp.apply(this, args)
-        return is_encrypted ? decrypt(result, API_SECRET) : result
+        return is_encrypted ? decrypt(result, API_SECRET) : parse(result)
     } catch (e) {
-        // Decrypt always if status code is not 401 (Unauthorized)
-        if (is_encrypted && e.statusCode !== 401)
-            e.error = decrypt(e.error, API_SECRET)
-        else {
-            try {
-                e.error = JSON.parse(e.error)
-            } catch (e) {}
-        }
+        // This happen if e.statusCode is not 200
+        e.error =
+            is_encrypted && e.statusCode !== 401 // Decrypt always if status code is not 401 (Unauthorized)
+                ? decrypt(e.error, API_SECRET)
+                : parse(e.error)
+
         throw e
     }
 }

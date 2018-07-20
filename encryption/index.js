@@ -1,16 +1,23 @@
 const encryption = require('easy-encrypt/aes256ctr')
 
-exports.encrypt = encrypt = function(text, password) {
-    const type = typeof text
-    if (text !== null && type === 'object') text = JSON.stringify(text)
-    if (type !== 'string') text = String(text)
-    return encryption.encrypt(text, password)
+exports.encrypt = encrypt = function(data, password) {
+    return encryption.encrypt(stringify(data), password)
 }
 
-exports.decrypt = decrypt = function(text, password) {
-    text = encryption.decrypt(text, password)
+exports.decrypt = decrypt = function(data, password) {
+    return parse(encryption.decrypt(data, password))
+}
+
+exports.stringify = stringify = function(data) {
+    const type = typeof data
+    if (data !== null && type === 'object') data = JSON.stringify(data)
+    if (type !== 'string') data = String(data)
+    return data
+}
+
+exports.parse = parse = function(data) {
     try {
-        text = JSON.parse(text)
+        data = JSON.parse(data)
     } catch (e) {}
-    return text
+    return data
 }

@@ -8,7 +8,7 @@ module.exports = async function(req, res, options) {
     const authorization = req.headers[key.AUTHORIZATION]
     const password = auths[authorization]
 
-    if (authorization === null || password === undefined) {
+    if (authorization === undefined || password === undefined) {
         send(res, status.UNAUTHORIZED.code, {
             message: status.UNAUTHORIZED.message
         })
