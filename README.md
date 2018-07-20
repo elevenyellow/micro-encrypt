@@ -49,13 +49,13 @@ to do
 
 ## /request
 
-This module is just a function that creates a wrapper of [request-promise](https://github.com/request/request-promise) that is a promise wrapper of [request](https://github.com/request/request).
+This module is just a function that creates a wrapper of [request-promise](https://github.com/request/request-promise) which is also a promise wrapper of [request](https://github.com/request/request).
 
 ```js
-const createRequest = require('micro-encrypt/request')
-const request = createRequest(API_KEY, API_SECRET) // Any of those you have defined previously in auths.json
+const request = require('micro-encrypt/request')
+const encryption = { API_KEY, API_SECRET } // Any of those you have defined previously in auths.json
 const body = { symbol: 'BTC' }
-const address = await request(`${url}/getAddressForDeposit`, { body })
+const address = await request(`${url}/getAddressForDeposit`, { body, encryption })
 ```
 
 If you want to use [request](https://github.com/request/request) as standalone you can do it this way:
@@ -64,7 +64,7 @@ If you want to use [request](https://github.com/request/request) as standalone y
 const request = require('request')
 const { encrypt, decrypt } = require('micro-encrypt/encryption')
 const body = encrypt({ symbol: 'BTC' }, API_SECRET)
-const headers = { authorization: API_KEY }
+const headers = { API_KEY: API_KEY }
 request(
     `${url}/getAddressForDeposit`,
     { body, headers },

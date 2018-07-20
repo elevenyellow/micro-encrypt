@@ -1,7 +1,6 @@
 const { send, text } = require('micro')
 const { encrypt, decrypt } = require('../encryption')
 const { status, key } = require('../const')
-const Route = require('route-parser')
 
 // Handler that resolve all the requests before is passed to the endpoint
 module.exports = async function(req, res, options) {
