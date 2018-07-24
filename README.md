@@ -74,6 +74,30 @@ request(
 )
 ```
 
+### Error handling
+
+A successful request always gets 2XX as [statusCode](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html). Any other [statusCode](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) will be an error. And you must handle it with try-catch.
+
+```js
+const request = require('micro-encrypt/request')
+try {
+    const address = await request(`${url}/helloWorld`)
+} catch(e) {
+    console.log(e.statusCode) // 404
+    console.log(e.error) // { "message": "Not Found" }
+}
+```
+
+If you want to use [request](https://github.com/request/request)
+
+```js
+const request = require('request')
+request(`${url}/helloWorld`, (error, response, body) => {
+    console.log(response.statusCode) // 404
+    console.log(body) // '{ "message": "Not Found" }'
+})
+```
+
 ## /encryption
 
 to do

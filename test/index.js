@@ -1,5 +1,6 @@
 const test = require('ava')
 const request = require('../request')
+const requestjs = require('request')
 const micro = require('../micro')
 const { load } = require('../endpoints')
 const auths = require('./.test/auths')
@@ -50,6 +51,27 @@ test('Not found', async t => {
     }
 })
 
+test.cb('echoEndpoint request.js', t => {
+    const body = { Hello: 'World' }
+    requestjs(
+        `${url}/echoEndpoint`,
+        { body: JSON.stringify(body) },
+        (error, response, b) => {
+            t.is(response.statusCode, 200)
+            t.deepEqual(JSON.parse(b), body)
+            t.end()
+        }
+    )
+})
+
+test.cb('Not found request.js', t => {
+    requestjs(`${url}`, (error, response, body) => {
+        t.is(response.statusCode, 404)
+        t.deepEqual(JSON.parse(body), { message: 'Not Found' })
+        t.end()
+    })
+})
+
 test('echoEndpoint JSON', async t => {
     const body = { Hello: 'World' }
     const result = await request(`${url}/echoEndpoint`, { body, encryption })
@@ -66,6 +88,18 @@ test('echoEndpoint Number', async t => {
     const body = 12345
     const result = await request(`${url}/echoEndpoint`, { body, encryption })
     t.deepEqual(result, body)
+})
+
+test('options', async t => {
+    const result = await request(`${url}/echoOptions`, { encryption })
+    t.deepEqual(result, JSON.parse(JSON.stringify(options)))
+})
+
+test('asyncResponse 200 Created', async t => {
+    const data = { message: 'OK!!' }
+    const body = { statusCode: 200, body: data }
+    const result = await request(`${url}/asyncResponse`, { body, encryption })
+    t.deepEqual(result, data)
 })
 
 test('customCode 201 Created', async t => {
@@ -134,11 +168,6 @@ test('customCode 501 Not Implemented', async t => {
         t.is(e.statusCode, body.statusCode)
         t.deepEqual(e.error, data)
     }
-})
-
-test('options', async t => {
-    const result = await request(`${url}/echoOptions`, { encryption })
-    t.deepEqual(result, JSON.parse(JSON.stringify(options)))
 })
 
 // test('Clossing server', async t => {
