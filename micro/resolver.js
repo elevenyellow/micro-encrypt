@@ -10,16 +10,19 @@ module.exports = async function(req, res, options) {
     const authorized = auths.hasOwnProperty(api_key)
 
     if (api_key !== undefined && !authorized) {
-        send(res, status.UNAUTHORIZED.code, {
-            message: status.UNAUTHORIZED.message
-        })
+        send(res, status.UNAUTHORIZED.statusCode, status.UNAUTHORIZED.body)
     } else {
-        const sendEncrypted = (res, status_code, body) =>
+        const sendEncrypted = ({ statusCode, body }) =>
             send(
                 res,
-                status_code,
-                authorized ? encrypt(body, api_secret) : stringify(body)
+                statusCode,
+                body !== undefined
+                    ? authorized
+                        ? encrypt(body, api_secret)
+                        : stringify(body)
+                    : body
             )
+
         const endpoints_match = endpoints.filter(
             endpoint => endpoint.route.match(req.url) !== false
         )
@@ -42,10 +45,7 @@ module.exports = async function(req, res, options) {
                 return authorized ? encrypt(body, api_secret) : stringify(body)
             }
         } else {
-            const body = {
-                message: status.NOT_FOUND.message
-            }
-            sendEncrypted(res, status.NOT_FOUND.code, body)
+            sendEncrypted(status.NOT_FOUND)
         }
     }
 }

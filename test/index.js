@@ -45,7 +45,7 @@ test('Not found', async t => {
     try {
         const result = await request(`${url}`, { encryption })
     } catch (e) {
-        t.is(e.statusCode, 402)
+        t.is(e.statusCode, 404)
         t.deepEqual(e.error, { message: 'Not Found' })
     }
 })
@@ -68,13 +68,71 @@ test('echoEndpoint Number', async t => {
     t.deepEqual(result, body)
 })
 
-test('customError (statusCode)', async t => {
-    const body = { statusCode: 501, message: 'Not Implemented' }
+test('customCode 201 Created', async t => {
+    const data = { message: 'Created' }
+    const body = { statusCode: 201, body: data }
+    const result = await request(`${url}/customCode`, { body, encryption })
+    t.deepEqual(result, data)
+})
+
+test('customCode 202 Accepted', async t => {
+    const data = { message: 'Accepted' }
+    const body = { statusCode: 202, body: data }
+    const result = await request(`${url}/customCode`, { body, encryption })
+    t.deepEqual(result, data)
+})
+
+test('customCode 204 No Content', async t => {
+    const data = { message: 'No Content' }
+    const body = { statusCode: 204, body: data }
+    const result = await request(`${url}/customCode`, { body, encryption })
+    t.deepEqual(result, '')
+})
+
+test('customCode 205 Reset Content', async t => {
+    const data = { message: 'Reset Content' }
+    const body = { statusCode: 205, body: data }
+    const result = await request(`${url}/customCode`, { body, encryption })
+    t.deepEqual(result, data)
+})
+
+test('customCode 206 Partial Content', async t => {
+    const data = { message: 'Partial Content' }
+    const body = { statusCode: 206, body: data }
+    const result = await request(`${url}/customCode`, { body, encryption })
+    t.deepEqual(result, data)
+})
+
+test('customCode 301 Moved Permanently', async t => {
+    const data = { message: 'Moved Permanently' }
+    const body = { statusCode: 301, body: data }
     try {
-        const result = await request(`${url}/customError`, { body, encryption })
+        await request(`${url}/customCode`, { body, encryption })
     } catch (e) {
         t.is(e.statusCode, body.statusCode)
-        t.deepEqual(e.error, body)
+        t.deepEqual(e.error, data)
+    }
+})
+
+test('customCode 400 Bad request', async t => {
+    const data = { message: 'Bad request' }
+    const body = { statusCode: 301, body: data }
+    try {
+        await request(`${url}/customCode`, { body, encryption })
+    } catch (e) {
+        t.is(e.statusCode, body.statusCode)
+        t.deepEqual(e.error, data)
+    }
+})
+
+test('customCode 501 Not Implemented', async t => {
+    const data = { message: 'Not Implemented' }
+    const body = { statusCode: 501, body: data }
+    try {
+        await request(`${url}/customCode`, { body, encryption })
+    } catch (e) {
+        t.is(e.statusCode, body.statusCode)
+        t.deepEqual(e.error, data)
     }
 })
 

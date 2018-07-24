@@ -1,9 +1,15 @@
 {
     "status": {
-        "OK": { "code": 200, "message": "Success!" },
-        "UNAUTHORIZED": { "code": 401, "message": "Unauthorized" },
-        "NOT_FOUND": { "code": 402, "message": "Not Found" },
-        "TOO_MANY_REQUESTS": { "code": 429, "message": "Too Many Requests" }
+        "OK": { "statusCode": 200, "body": { "message": "Success!" } },
+        "UNAUTHORIZED": {
+            "statusCode": 401,
+            "body": { "message": "Unauthorized" }
+        },
+        "NOT_FOUND": { "statusCode": 404, "body": { "message": "Not Found" } },
+        "TOO_MANY_REQUESTS": {
+            "statusCode": 429,
+            "body": { "message": "Too Many Requests" }
+        }
     },
 
     "key": {
