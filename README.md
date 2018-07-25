@@ -64,7 +64,7 @@ If you want to use [request](https://github.com/request/request) as standalone y
 const request = require('request')
 const { encrypt, decrypt } = require('micro-encrypt/encryption')
 const body = encrypt({ symbol: 'BTC' }, API_SECRET)
-const headers = { API_KEY: API_KEY }
+const headers = { authorization: API_KEY }
 request(
     `${url}/getAddressForDeposit`,
     { body, headers },
@@ -74,7 +74,7 @@ request(
 )
 ```
 
-### Error handling
+#### Error handling
 
 A successful request always gets 2XX as [statusCode](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html). Any other [statusCode](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) will be an error. And you must handle it with try-catch.
 

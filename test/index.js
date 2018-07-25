@@ -3,6 +3,7 @@ const request = require('../request')
 const requestjs = require('request')
 const micro = require('../micro')
 const { load } = require('../endpoints')
+const { encrypt, decrypt } = require('../encryption')
 const auths = require('./.test/auths')
 
 let port = 4444
@@ -56,9 +57,25 @@ test.cb('echoEndpoint request.js', t => {
     requestjs(
         `${url}/echoEndpoint`,
         { body: JSON.stringify(body) },
-        (error, response, b) => {
+        (error, response, _body) => {
             t.is(response.statusCode, 200)
-            t.deepEqual(JSON.parse(b), body)
+            t.deepEqual(JSON.parse(_body), body)
+            t.end()
+        }
+    )
+})
+
+test.cb('echoEndpoint encrypted request.js', t => {
+    const data = { Hello: 'World' }
+    const body = encrypt(data, API_SECRET)
+    const headers = { authorization: API_KEY }
+    requestjs(
+        `${url}/echoEndpoint`,
+        { body, headers },
+        (error, response, body) => {
+            body = decrypt(body, API_SECRET)
+            t.is(response.statusCode, 200)
+            t.deepEqual(body, data)
             t.end()
         }
     )
@@ -167,6 +184,20 @@ test('customCode 501 Not Implemented', async t => {
     } catch (e) {
         t.is(e.statusCode, body.statusCode)
         t.deepEqual(e.error, data)
+    }
+})
+
+test('If Authorized', async t => {
+    const result = await request(`${url}/ifAuthorized`, { encryption })
+    t.is(result, true)
+})
+
+test('ifAuthorized not', async t => {
+    try {
+        await request(`${url}/ifAuthorized`)
+    } catch (e) {
+        t.is(e.statusCode, 401)
+        t.deepEqual(e.error, { message: 'Unauthorized' })
     }
 })
 

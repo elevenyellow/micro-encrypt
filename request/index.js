@@ -12,6 +12,8 @@ module.exports = async (...args) => {
     let is_encrypted = false
     let API_KEY, API_SECRET
     const encryption = options[key.ENCRYPTION]
+    delete options[key.ENCRYPTION]
+
     if (
         isObject(encryption) &&
         typeof encryption[key.API_KEY] == 'string' &&

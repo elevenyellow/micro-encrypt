@@ -1,6 +1,6 @@
 {
     "name": "micro-encrypt",
-    "version": "1.4.1",
+    "version": "1.5.1",
     "description": "Small library to create micro-services with AES-256-CTR encryption",
     "scripts": {
         "test": "ava",
