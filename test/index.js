@@ -187,19 +187,19 @@ test('customCode 501 Not Implemented', async t => {
     }
 })
 
-test('If Authorized', async t => {
-    const result = await request(`${url}/ifAuthorized`, { encryption })
-    t.is(result, true)
-})
+// test('If Authorized', async t => {
+//     const result = await request(`${url}/ifAuthorized`, { encryption })
+//     t.is(result, true)
+// })
 
-test('ifAuthorized not', async t => {
-    try {
-        await request(`${url}/ifAuthorized`)
-    } catch (e) {
-        t.is(e.statusCode, 401)
-        t.deepEqual(e.error, { message: 'Unauthorized' })
-    }
-})
+// test('ifAuthorized not', async t => {
+//     try {
+//         await request(`${url}/ifAuthorized`)
+//     } catch (e) {
+//         t.is(e.statusCode, 401)
+//         t.deepEqual(e.error, { message: 'Unauthorized' })
+//     }
+// })
 
 // test('Clossing server', async t => {
 //     t.deepEqual(typeof server.close(), 'Yeah!!')
