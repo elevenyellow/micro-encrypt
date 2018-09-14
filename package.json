@@ -1,6 +1,6 @@
 {
     "name": "micro-encrypt",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "description": "Small library to create micro-services with AES-256-CTR encryption",
     "scripts": {
         "test": "ava",
@@ -9,7 +9,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "easy-encrypt": "^1.0.2",
+        "easy-encrypt": "^1.1.0",
         "glob": "^7.1.2",
         "micro": "^9.3.2",
         "request": "^2.87.0",
